@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nextjs-fargate
+This is the application using Next.js for deploying to AWS Fargate
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Step
+### local
 ```
+git clone
+docker compose up -d --build
+```
+`npm run dev` で起動しているのでホストマシンの変更はリロードなしで反映される
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Fargate
+https://github.com/YutakaOkabe/terraform-alb-fargate-rds でインフラを作っていることを想定
+```
+docker build . -t terraform-alb-fargate-rds/app:latest -f infra/ecr/node/Dockerfile
+# イメージが起動することの確認（localhost:3002）
+docker run --rm -p 3002:3000 terraform-alb-fargate-rds/app
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 524126162369.dkr.ecr.ap-northeast-1.amazonaws.com
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+docker tag terraform-alb-fargate-rds/app:latest 524126162369.dkr.ecr.ap-northeast-1.amazonaws.com/terraform-alb-fargate-rds/app:latest
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+docker push 524126162369.dkr.ecr.ap-northeast-1.amazonaws.com/terraform-alb-fargate-rds/app:latest
+```
