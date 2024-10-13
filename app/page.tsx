@@ -1,18 +1,34 @@
-import { query } from './database';
+'use client';
+
+import { useEffect, useState } from 'react';
 
 type User = {
   id: number;
   name: string;
 };
 
-export default async function UsersPage() {
-  let users: User[] = [];
+export default function UsersPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  try {
-    const result = await query('SELECT * FROM users');
-    users = result.rows;
-  } catch (error) {
-    console.error('Error fetching users:', error);
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const response = await fetch('/api/users');
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUsers();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
