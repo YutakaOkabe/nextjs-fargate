@@ -18,6 +18,7 @@ export default async function UsersPage() {
   return (
     <div>
       <table>
+        <p>Hello World</p>
         <thead>
           <tr>
             <th>ID</th>
