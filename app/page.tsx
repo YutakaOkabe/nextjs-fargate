@@ -1,7 +1,7 @@
 export default async function UsersPage() {
   return (
     <div>
-      <p>Hello World!!!</p>
+      <p>Hello World! from Next.js</p>
     </div>
   );
 }
