@@ -14,7 +14,8 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY . .
-COPY .env.dev .env
+# ビルドが通らないのでローカルの設定でビルドを通して、タスク定義から上書きするようにする
+# COPY .env.dev .env
 
 RUN npm run build
 
